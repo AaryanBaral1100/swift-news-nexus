@@ -46,7 +46,18 @@ const ArticlePage = () => {
         .single();
         
       if (error) throw error;
-      return data as Article;
+      
+      // Transform the data to ensure it matches the Article type
+      const transformedData: Article = {
+        ...data,
+        author: data.author || {
+          id: data.author_id,
+          full_name: null,
+          avatar_url: null
+        }
+      };
+      
+      return transformedData;
     },
     enabled: !!slug,
   });
