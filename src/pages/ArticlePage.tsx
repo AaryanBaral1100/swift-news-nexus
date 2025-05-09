@@ -1,4 +1,3 @@
-
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, Article, Category, isPremiumUser } from "@/lib/supabase";
@@ -10,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Bookmark, BookmarkCheck, Download, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 // Function to convert article to PDF (for premium users)
 const downloadAsPdf = (article: Article) => {
@@ -192,17 +192,15 @@ const ArticlePage = () => {
         
         <div className="flex justify-between items-center">
           <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+            <Avatar className="h-8 w-8 mr-2">
               {article.author?.avatar_url ? (
-                <img 
-                  src={article.author.avatar_url} 
-                  alt={article.author.full_name || ""} 
-                  className="h-8 w-8 rounded-full"
-                />
+                <AvatarImage src={article.author.avatar_url} alt={article.author.full_name || "Author"} />
               ) : (
-                <User className="h-4 w-4 text-gray-500" />
+                <AvatarFallback>
+                  <User className="h-4 w-4 text-gray-500" />
+                </AvatarFallback>
               )}
-            </div>
+            </Avatar>
             <span className="text-gray-600 mr-2">
               {article.author?.full_name || "Unknown Author"}
             </span>
