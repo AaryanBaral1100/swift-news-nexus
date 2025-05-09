@@ -32,6 +32,8 @@ const EditArticle = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
+  const [isTrending, setIsTrending] = useState(false);
+  const [authorId, setAuthorId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { data: article, isLoading: isArticleLoading } = useQuery({
@@ -66,9 +68,11 @@ const EditArticle = () => {
       setTitle(article.title);
       setSlug(article.slug);
       setContent(article.content);
-      setImageUrl(article.image_url);
-      setCategoryId(article.category_id.toString());
+      setImageUrl(article.image_url || "");
+      setCategoryId(article.category_id ? article.category_id.toString() : "");
       setIsFeatured(article.is_featured);
+      setIsTrending(article.is_trending || false);
+      setAuthorId(article.author_id);
     }
   }, [article]);
   
@@ -81,6 +85,7 @@ const EditArticle = () => {
       image_url: string;
       category_id: number;
       is_featured: boolean;
+      is_trending: boolean;
     }) => {
       const { data, error } = await supabase
         .from("articles")
@@ -91,6 +96,7 @@ const EditArticle = () => {
           image_url: articleData.image_url,
           category_id: articleData.category_id,
           is_featured: articleData.is_featured,
+          is_trending: articleData.is_trending,
         })
         .eq("id", articleData.id)
         .select();
@@ -139,6 +145,7 @@ const EditArticle = () => {
       image_url: imageUrl,
       category_id: parseInt(categoryId),
       is_featured: isFeatured,
+      is_trending: isTrending,
     });
   };
   
@@ -273,6 +280,15 @@ const EditArticle = () => {
                     onCheckedChange={(checked) => setIsFeatured(checked as boolean)}
                   />
                   <Label htmlFor="isFeatured">Featured article</Label>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isTrending"
+                    checked={isTrending}
+                    onCheckedChange={(checked) => setIsTrending(checked as boolean)}
+                  />
+                  <Label htmlFor="isTrending">Trending article</Label>
                 </div>
               </CardContent>
             </Card>

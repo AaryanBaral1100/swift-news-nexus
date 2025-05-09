@@ -24,11 +24,16 @@ import {
   LayoutDashboard, 
   FileEdit, 
   Plus,
-  Home
+  Home,
+  Users,
+  Settings
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { isAdmin } from "@/lib/supabase";
 
 const AdminSidebar = () => {
   const location = useLocation();
+  const { profile } = useAuth();
   
   return (
     <Sidebar className="w-64 border-r">
@@ -66,13 +71,42 @@ const AdminSidebar = () => {
                 New Article
               </NavLink>
             </li>
-            <li>
+            
+            {isAdmin(profile) && (
+              <li>
+                <NavLink 
+                  to="/admin/users" 
+                  className={({ isActive }) => 
+                    `flex items-center p-2 rounded-md transition-colors ${
+                      isActive 
+                        ? "bg-primary text-primary-foreground" 
+                        : "hover:bg-accent"
+                    }`
+                  }
+                >
+                  <Users className="h-5 w-5 mr-3" />
+                  User Management
+                </NavLink>
+              </li>
+            )}
+            
+            <li className="pt-4">
               <NavLink 
                 to="/" 
                 className="flex items-center p-2 rounded-md transition-colors hover:bg-accent"
               >
                 <Home className="h-5 w-5 mr-3" />
                 View Site
+              </NavLink>
+            </li>
+            
+            <li>
+              <NavLink 
+                to="/profile" 
+                className="flex items-center p-2 rounded-md transition-colors hover:bg-accent"
+              >
+                <Settings className="h-5 w-5 mr-3" />
+                My Profile
               </NavLink>
             </li>
           </ul>

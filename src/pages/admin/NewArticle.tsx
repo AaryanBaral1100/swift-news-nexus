@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, Category } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,7 @@ const NewArticle = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useAuth();
   
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -30,6 +32,7 @@ const NewArticle = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
+  const [isTrending, setIsTrending] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Auto-generate slug from title
@@ -64,6 +67,8 @@ const NewArticle = () => {
       image_url: string;
       category_id: number;
       is_featured: boolean;
+      is_trending: boolean;
+      author_id: string;
     }) => {
       const { data, error } = await supabase
         .from("articles")
@@ -94,7 +99,7 @@ const NewArticle = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!title || !slug || !content || !imageUrl || !categoryId) {
+    if (!title || !slug || !content || !imageUrl || !categoryId || !user) {
       toast({
         title: "Validation error",
         description: "Please fill in all required fields.",
@@ -112,6 +117,8 @@ const NewArticle = () => {
       image_url: imageUrl,
       category_id: parseInt(categoryId),
       is_featured: isFeatured,
+      is_trending: isTrending,
+      author_id: user.id,
     });
   };
   
@@ -214,13 +221,22 @@ const NewArticle = () => {
                   />
                   <Label htmlFor="isFeatured">Featured article</Label>
                 </div>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="isTrending"
+                    checked={isTrending}
+                    onCheckedChange={(checked) => setIsTrending(checked as boolean)}
+                  />
+                  <Label htmlFor="isTrending">Trending article</Label>
+                </div>
               </CardContent>
             </Card>
             
             <div className="flex justify-end">
               <Button
                 type="submit"
-                disabled={isSubmitting || isCategoriesLoading}
+                disabled={isSubmitting || isCategoriesLoading || !user}
               >
                 {isSubmitting ? "Creating..." : "Create Article"}
               </Button>

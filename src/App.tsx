@@ -14,9 +14,13 @@ import AdminLayout from "./components/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import NewArticle from "./pages/admin/NewArticle";
 import EditArticle from "./pages/admin/EditArticle";
+import UserManagement from "./pages/admin/UserManagement";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
+import Bookmarks from "./pages/Bookmarks";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -33,16 +37,27 @@ const App = () => (
               <Route path="/article/:slug" element={<ArticlePage />} />
               <Route path="/category/:slug" element={<CategoryPage />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              <Route path="/bookmarks" element={
+                <ProtectedRoute>
+                  <Bookmarks />
+                </ProtectedRoute>
+              } />
             </Route>
             
             <Route path="/admin" element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <AdminLayout />
-              </ProtectedRoute>
+              </AdminRoute>
             }>
               <Route index element={<AdminDashboard />} />
               <Route path="new-article" element={<NewArticle />} />
               <Route path="edit-article/:id" element={<EditArticle />} />
+              <Route path="users" element={<UserManagement />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
