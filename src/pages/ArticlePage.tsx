@@ -48,7 +48,7 @@ const ArticlePage = () => {
         
       if (error) throw error;
       
-      // Transform the data to ensure it matches the Article type
+      // Transform the data to ensure proper type handling
       const transformedData: Article = {
         ...data,
         author: data.author || null
