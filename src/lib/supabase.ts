@@ -29,7 +29,11 @@ export type Article = {
   author_id: string;
   category_id: number | null;
   category?: Category;
-  author?: Profile;
+  author?: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
 };
 
 export type Category = {

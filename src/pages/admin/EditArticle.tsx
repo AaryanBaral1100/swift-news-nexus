@@ -39,10 +39,12 @@ const EditArticle = () => {
   const { data: article, isLoading: isArticleLoading } = useQuery({
     queryKey: ["article", id],
     queryFn: async () => {
+      if (!id) throw new Error("No article ID provided");
+      
       const { data, error } = await supabase
         .from("articles")
         .select("*")
-        .eq("id", id)
+        .eq("id", parseInt(id))
         .single();
         
       if (error) throw error;

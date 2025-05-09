@@ -36,7 +36,7 @@ const ArticlePage = () => {
         .select(`
           *,
           category:category_id (
-            id, name, slug
+            id, name, slug, description, image_url, color, created_at, updated_at
           ),
           author:author_id (
             id, full_name, avatar_url
@@ -46,7 +46,7 @@ const ArticlePage = () => {
         .single();
         
       if (error) throw error;
-      return data as Article & { author: { id: string, full_name: string | null, avatar_url: string | null } };
+      return data as Article;
     },
     enabled: !!slug,
   });
