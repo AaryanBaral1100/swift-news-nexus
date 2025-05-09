@@ -88,7 +88,7 @@ const Navbar = () => {
             </Button>
             
             {isMenuOpen && (
-              <div className="absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-4">
+              <div className="absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-4 z-50">
                 <nav>
                   <ul className="space-y-2">
                     <li>
@@ -169,17 +169,19 @@ const Navbar = () => {
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>Categories</NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                      {categories?.map((category) => (
-                        <ListItem
-                          key={category.id}
-                          title={category.name}
-                          href={`/category/${category.slug}`}
-                        >
-                          {category.description || `All ${category.name} articles`}
-                        </ListItem>
-                      ))}
-                    </ul>
+                    <div className="w-[400px] max-h-[500px] overflow-y-auto">
+                      <ul className="grid gap-3 p-4 md:grid-cols-2">
+                        {categories?.map((category) => (
+                          <ListItem
+                            key={category.id}
+                            title={category.name}
+                            href={`/category/${category.slug}`}
+                          >
+                            {category.description || `All ${category.name} articles`}
+                          </ListItem>
+                        ))}
+                      </ul>
+                    </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 
@@ -210,7 +212,7 @@ const Navbar = () => {
                     {userRoleBadge()}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/profile')}>

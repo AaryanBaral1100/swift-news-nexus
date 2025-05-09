@@ -51,6 +51,7 @@ const ArticlePage = () => {
       // Transform the data to ensure proper type handling
       const transformedData: Article = {
         ...data,
+        // Make sure author is properly handled as potentially null
         author: data.author || null
       };
       

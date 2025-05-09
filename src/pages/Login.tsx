@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Info } from "lucide-react";
+import { Info, AlertTriangle } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const Login = () => {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState("");
   
   // Register state
   const [registerEmail, setRegisterEmail] = useState("");
@@ -33,21 +34,36 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoggingIn(true);
+    setLoginError("");
     
     try {
-      // Check for demo admin account
+      // Special case for demo admin account
       if (loginEmail === "admin" && loginPassword === "password") {
         toast({
           title: "Demo Admin Account",
           description: "Logging in with demo admin credentials...",
         });
+        
+        // This is a special demo account - in a real app you wouldn't hardcode this
+        // Wait for toast to be visible before redirecting
+        setTimeout(() => {
+          navigate("/admin");
+        }, 1000);
+        return;
       }
       
-      await signIn(loginEmail, loginPassword);
-      navigate(from, { replace: true });
-    } catch (error) {
+      const { error } = await signIn(loginEmail, loginPassword);
+      
+      if (error) {
+        console.error("Login error:", error);
+        setLoginError(error.message || "Failed to sign in");
+        setIsLoggingIn(false);
+      } else {
+        navigate(from, { replace: true });
+      }
+    } catch (error: any) {
       console.error("Login error:", error);
-    } finally {
+      setLoginError(error.message || "An unknown error occurred");
       setIsLoggingIn(false);
     }
   };
@@ -102,8 +118,14 @@ const Login = () => {
           <TabsContent value="login">
             <form onSubmit={handleLogin}>
               <CardContent className="space-y-4 pt-4">
+                {loginError && (
+                  <Alert variant="destructive" className="bg-red-50 border-red-200">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription>{loginError}</AlertDescription>
+                  </Alert>
+                )}
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Email or Username</Label>
                   <Input
                     id="email"
                     type="text"
