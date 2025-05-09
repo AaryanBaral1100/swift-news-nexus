@@ -1,3 +1,4 @@
+
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase, Article, Category, isPremiumUser } from "@/lib/supabase";
@@ -50,11 +51,7 @@ const ArticlePage = () => {
       // Transform the data to ensure it matches the Article type
       const transformedData: Article = {
         ...data,
-        author: data.author || {
-          id: data.author_id,
-          full_name: null,
-          avatar_url: null
-        }
+        author: data.author || null
       };
       
       return transformedData;
