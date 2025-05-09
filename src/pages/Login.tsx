@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,6 +35,14 @@ const Login = () => {
     setIsLoggingIn(true);
     
     try {
+      // Check for demo admin account
+      if (loginEmail === "admin" && loginPassword === "password") {
+        toast({
+          title: "Demo Admin Account",
+          description: "Logging in with demo admin credentials...",
+        });
+      }
+      
       await signIn(loginEmail, loginPassword);
       navigate(from, { replace: true });
     } catch (error) {
@@ -45,7 +56,11 @@ const Login = () => {
     e.preventDefault();
     
     if (registerPassword !== registerConfirmPassword) {
-      alert("Passwords do not match");
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive"
+      });
       return;
     }
     
@@ -71,6 +86,13 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         
+        <Alert className="mx-6 mb-2 bg-blue-50 text-blue-800 border-blue-200">
+          <Info className="h-4 w-4" />
+          <AlertDescription>
+            Demo admin account available: Username: <strong>admin</strong>, Password: <strong>password</strong>
+          </AlertDescription>
+        </Alert>
+        
         <Tabs defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="login">Login</TabsTrigger>
@@ -84,8 +106,8 @@ const Login = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
-                    type="email"
-                    placeholder="Enter your email"
+                    type="text"
+                    placeholder="Enter your email or username"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     required
